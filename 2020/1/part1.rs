@@ -3,12 +3,30 @@ use std::fs;
 
 
 fn main() {
-    let input = fs::read_to_string("./input").expect("unable to read input!");
-    let parsed: Vec<i32> = input.split("\n").map(|x| x.parse().unwrap()).collect();
-    let hashed: HashMap<i32, i32> = parsed.iter().map(|&x| (2020 - x, x)).collect();
-    let y = parsed.iter().find_map(|x| hashed.get(&x)).unwrap();
-    let x = hashed.get(y).unwrap();
+    let entries = parse_input(read_input("input"));
+    let (x, y) = find_pair_for_sum(2020, &entries);
+    serialize_output(x, y);
+}
 
-    println!("entries=({}, {})", x, y);
-    println!("answer={}", x * y);
+fn read_input(file_path: &str) -> String {
+    fs::read_to_string(file_path).expect("unable to read input!")
+}
+
+fn parse_input(input: String) -> Vec<i32> {
+    input.lines().map(str::parse).collect::<Result<_, _>>().unwrap()
+}
+
+fn find_pair_for_sum(target: i32, numbers: &Vec<i32>) -> (i32, i32) {
+    let diff_map = key_by_diff(target, &numbers);
+    let y = numbers.iter().find_map(|x| diff_map.get(&x)).unwrap();
+    let x = diff_map.get(y).unwrap();
+    (*x, *y)
+}
+
+fn key_by_diff(target: i32, numbers: &Vec<i32>) -> HashMap<i32, i32> {
+    numbers.iter().map(|&x| (target - x, x)).collect()
+}
+
+fn serialize_output(x: i32, y: i32) -> () {
+    println!("{{ \"entries\": \"({}, {})\", \"result\": {} }}", x, y, x * y);
 }
