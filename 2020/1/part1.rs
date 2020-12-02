@@ -4,7 +4,7 @@ use std::fs;
 
 fn main() {
     let entries = parse_input(read_input("input"));
-    let (x, y) = find_pair_for_sum(2020, &entries);
+    let (x, y) = find_two_sum(2020, &entries);
     serialize_output(x, y);
 }
 
@@ -16,7 +16,7 @@ fn parse_input(input: String) -> Vec<i32> {
     input.lines().map(str::parse).collect::<Result<_, _>>().unwrap()
 }
 
-fn find_pair_for_sum(target: i32, numbers: &Vec<i32>) -> (i32, i32) {
+fn find_two_sum(target: i32, numbers: &Vec<i32>) -> (i32, i32) {
     let diff_map = key_by_diff(target, &numbers);
     let y = numbers.iter().find_map(|x| diff_map.get(&x)).unwrap();
     let x = diff_map.get(y).unwrap();
