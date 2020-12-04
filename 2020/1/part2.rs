@@ -1,23 +1,22 @@
 use std::collections::HashMap;
 use std::fs;
+use std::io::Error;
+use std::num::ParseIntError;
 
 
 fn main() {
-    match find_three_sum( 2020, &parse_input( &read_input( "input" ) ) ) {
-        Some( ( x, y, z ) ) => serialize_output( x, y, z, x * y * z ),
-        _ => panic!( "No matching triple found for input!" ),
-    }
+    let raw_input = &read_input( "input" ).expect( "unable to read input!" );
+    let input = &parse_input( raw_input ).expect( "failed to parse input!" );
+    let (x, y, z) = find_three_sum( 2020, input ).expect( "no matching triple found for input!" );
+    serialize_output( x, y, z, x * y * z )
 }
 
-fn read_input( file_path: &str ) -> String {
-    fs::read_to_string( file_path ).expect( "unable to read input!" )
+fn read_input( file_path: &str ) -> Result<String, Error> {
+    fs::read_to_string( file_path )
 }
 
-fn parse_input( input: &str ) -> Vec<i32> {
-    match input.lines().map(str::parse).collect() {
-        Ok( input ) => input,
-        Err( error ) => panic!( "failed to parse input: {}", error ),
-    }
+fn parse_input( input: &str ) -> Result<Vec<i32>, ParseIntError> {
+    input.lines().map(str::parse).collect()
 }
 
 fn find_three_sum( target: i32, numbers: &[i32] ) -> Option<(i32, i32, i32)> {
