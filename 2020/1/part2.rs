@@ -5,9 +5,9 @@ use std::num::ParseIntError;
 
 
 fn main() {
-    let raw_input = &read_input( "input" ).expect( "unable to read input!" );
-    let input = &parse_input( raw_input ).expect( "failed to parse input!" );
-    let (x, y, z) = find_three_sum( 2020, input ).expect( "no matching triple found for input!" );
+    let raw_input = read_input( "input" ).expect( "unable to read input!" );
+    let input = parse_input( &raw_input ).expect( "failed to parse input!" );
+    let (x, y, z) = find_three_sum( 2020, &input ).expect( "no matching triple found for input!" );
     serialize_output( x, y, z, x * y * z )
 }
 
