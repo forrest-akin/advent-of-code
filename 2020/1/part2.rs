@@ -8,7 +8,7 @@ fn main() {
     let raw_input = read_input( "input" ).expect( "unable to read input!" );
     let input = parse_input( &raw_input ).expect( "failed to parse input!" );
     let (x, y, z) = find_three_sum( 2020, &input ).expect( "no matching triple found for input!" );
-    serialize_output( x, y, z, x * y * z )
+    println!("{}", x * y * z)
 }
 
 fn read_input( file_path: &str ) -> Result<String, Error> {
@@ -28,9 +28,4 @@ fn find_three_sum( target: i32, numbers: &[i32] ) -> Option<(i32, i32, i32)> {
 
 fn key_by_diff( target: i32, numbers: &[i32] ) -> HashMap<i32, i32> {
     numbers.iter().map( |&x| ( target - x, x ) ).collect()
-}
-
-fn serialize_output( x: i32, y: i32, z: i32, result: i32 ) {
-    println!( "{{ \"entries\": \"({}, {}, {})\", \"result\": {} }}"
-            , x, y, z, result );
 }

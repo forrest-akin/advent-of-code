@@ -5,7 +5,7 @@ use std::fs;
 fn main() {
     let entries = parse_input(read_input("input"));
     let (x, y) = find_two_sum(2020, &entries);
-    serialize_output(x, y);
+    println!("{}", x * y);
 }
 
 fn read_input(file_path: &str) -> String {
@@ -25,8 +25,4 @@ fn find_two_sum(target: i32, numbers: &Vec<i32>) -> (i32, i32) {
 
 fn key_by_diff(target: i32, numbers: &Vec<i32>) -> HashMap<i32, i32> {
     numbers.iter().map(|&x| (target - x, x)).collect()
-}
-
-fn serialize_output(x: i32, y: i32) -> () {
-    println!("{{ \"entries\": \"({}, {})\", \"result\": {} }}", x, y, x * y);
 }
