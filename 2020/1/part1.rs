@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 use std::fs;
 
+
 fn main() {
-    let raw_input = read_input("input").unwrap();
+    let raw_input = fs::read_to_string("input").expect("IOError: unable to read input");
     let numbers = parse_input(&raw_input).unwrap();
     let (x, y) = find_two_sum(2020, &numbers).expect("No pair found!");
     println!("{}", x * y);
@@ -22,8 +23,4 @@ fn parse_input(input: &str) -> Result<Vec<i32>, &str> {
     input.lines()
     .map(|line| line.parse().map_err(|_| "ParseError: each row must be an integer"))
     .collect()
-}
-
-fn read_input(file_path: &str) -> Result<String, &str> {
-    fs::read_to_string(file_path).map_err(|_| "IOError: unable to read input")
 }

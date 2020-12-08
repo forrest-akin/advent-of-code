@@ -2,8 +2,9 @@ use std::convert::TryInto;
 use std::fmt::Debug;
 use std::fs;
 
+
 fn main() {
-    let raw_input = read_input("input").unwrap();
+    let raw_input = fs::read_to_string("input").unwrap("IOError: unable to read input");
     let passwords = parse_input(&raw_input).unwrap();
     let valid_passwords = get_valid_passwords(&passwords);
     println!("{}", valid_passwords.len())
@@ -25,10 +26,6 @@ fn is_valid_password(Password { password, policy }: &Password) -> bool {
         (_, Some(c)) => c == policy.pattern,
         _ => false,
     }
-}
-
-fn read_input(file_path: &str) -> Result<String, &str> {
-    fs::read_to_string(file_path).map_err(|_| "IO Error: unable to read input")
 }
 
 fn parse_input(input: &str) -> Result<Vec<Password>, &str> {

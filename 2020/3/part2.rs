@@ -2,7 +2,7 @@ use std::fs;
 
 
 fn main() {
-    let raw_input = fs::read_to_string("input").expect("IO Error: unable to read input");
+    let raw_input = fs::read_to_string("input").expect("IOError: unable to read input");
     let slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
     let product =
         slopes.iter()

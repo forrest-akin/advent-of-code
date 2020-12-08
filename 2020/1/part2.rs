@@ -3,7 +3,7 @@ use std::fs;
 
 
 fn main() {
-    let raw_input = read_input("input").unwrap();
+    let raw_input = fs::read_to_string("input").expect("IOError: unable to read input");
     let input = parse_input(&raw_input).unwrap();
     let (x, y, z) = find_three_sum(2020, &input).expect("No triple found!");
     println!("{}", x * y * z)
@@ -25,8 +25,4 @@ fn parse_input(input: &str) -> Result<Vec<i32>, &str> {
     input.lines()
     .map(|line| line.parse().map_err(|_| "ParseError: each row must be an integer"))
     .collect()
-}
-
-fn read_input(file_path: &str) -> Result<String, &str> {
-    fs::read_to_string(file_path).map_err(|_| "IOError: unable to read input")
 }
