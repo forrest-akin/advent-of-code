@@ -9,19 +9,21 @@ fn main() {
 }
 
 fn count_trees(lines: &[&str]) -> usize {
-    let head = lines.get(0).unwrap();
-    let mut indexer = (0..head.len()).cycle();
+    let row_len = lines.get(0).unwrap_or(&"").len();
+    let mut indexer = (0..row_len).cycle();
+    indexer.next(); // first step is from 0, not to 0
 
-    indexer.next();
     lines.iter().skip(1)
-    .fold(0, |count, line| {
-        indexer.next();
-        indexer.next();
-        let n = indexer.next().unwrap();
-        let c = line.chars().nth(n).unwrap();
-        let increment = if c == '#' { 1 } else { 0 };
-        count + increment
-    })
+    .filter(|line|
+        next_nth(3, &mut indexer)
+        .and_then(|n| line.chars().nth(n))
+        .map(|c| c == '#')
+        .unwrap_or(false))
+    .count()
+}
+
+fn next_nth<T, U: Iterator<Item=T>>(n: i32, mut iterator: U) -> Option<T> {
+    (0..n).flat_map(|_| iterator.next()).last()
 }
 
 fn parse_input(input: &str) -> Vec<&str> {
