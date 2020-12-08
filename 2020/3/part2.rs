@@ -19,15 +19,11 @@ fn count_trees((x, y): (usize, usize), lines: &[&str]) -> usize {
 
     lines.iter().skip(y).step_by(y)
     .filter(|line|
-        next_nth(x, &mut indexer)
+        indexer.nth(x - 1)
         .and_then(|n| line.chars().nth(n))
         .map(|c| c == '#')
         .unwrap_or(false))
     .count()
-}
-
-fn next_nth<T, U: Iterator<Item=T>>(n: usize, mut iterator: U) -> Option<T> {
-    (0..n).flat_map(|_| iterator.next()).last()
 }
 
 fn parse_input(input: &str) -> Vec<&str> {
