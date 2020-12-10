@@ -4,7 +4,7 @@ use std::fs;
 
 
 fn main() {
-    let raw_input = fs::read_to_string("input").unwrap("IOError: unable to read input");
+    let raw_input = fs::read_to_string("input").expect("IOError: unable to read input");
     let passwords = parse_input(&raw_input).unwrap();
     let valid_passwords = get_valid_passwords(&passwords);
     println!("{}", valid_passwords.len())
