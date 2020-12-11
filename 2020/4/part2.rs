@@ -90,23 +90,23 @@ impl From<HashMap<&str, &str>> for PartialPassport {
 
 fn parse_byr(byr: &str) -> Option<i32> {
     //four digits; at least 1920 and at most 2002
-    byr.parse::<i32>().ok().filter(|&x| 1920 <= x && x <= 2002)
+    byr.parse().ok().filter(|&x| 1920 <= x && x <= 2002)
 }
 
 fn parse_iyr(iyr: &str) -> Option<i32> {
     //four digits; at least 2010 and at most 2020
-    iyr.parse::<i32>().ok().filter(|&x| 2010 <= x && x <= 2020)
+    iyr.parse().ok().filter(|&x| 2010 <= x && x <= 2020)
 }
 
 fn parse_eyr(eyr: &str) -> Option<i32> {
     //four digits; at least 2020 and at most 2030
-    eyr.parse::<i32>().ok().filter(|&x| 2020 <= x && x <= 2030)
+    eyr.parse().ok().filter(|&x| 2020 <= x && x <= 2030)
 }
 
 fn parse_hgt(hgt: &str) -> Option<Height> {
     //a number followed by either cm or in:
     let (x, unit) = hgt.split_at(hgt.len() - 2);
-    x.parse::<i32>().ok()
+    x.parse().ok()
     .filter(|&height: &i32| match unit {
         // If cm, the number must be at least 150 and at most 193.
         "cm" => 150 <= height && height <= 193,
