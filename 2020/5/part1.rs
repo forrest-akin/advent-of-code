@@ -33,8 +33,8 @@ fn parse_col(raw_col: &str) -> i32 {
     raw_col.chars()
     .fold(BinarySearcher { low: 0, high: 7 },
         |bs, c| match c {
-            'R' => bs.left(),
-            'L' => bs.right(),
+            'L' => bs.left(),
+            'R' => bs.right(),
             _ => panic!("ParseError: column characters must be 'R' or 'L'"),
         })
     .middle()
