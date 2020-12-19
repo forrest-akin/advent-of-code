@@ -5,48 +5,49 @@ use std::fs;
 
 fn main() {
     let input = fs::read_to_string("input").expect("IOError: unable to read input");
-    let shiny_gold_container_set = to_set_of_containers(
-        input.lines()
-        .map(parse_rule)
-        .collect());
-    println!("{}", shiny_gold_container_set.len() - 1);
+    let bag_rules = input.lines().map(parse_rule).collect();
+    let shiny_gold_ancestors = to_ancestor_set("shiny gold", bag_rules);
+    println!("{}", shiny_gold_ancestors.len());
 }
 
-fn to_set_of_containers(bag_rules: Vec<BagRule>) -> HashSet<String> {
-    let mut set = HashSet::new();
-    hydrate_set(&"shiny gold".to_string(), &build_container_map(bag_rules), &mut set);
-    set
+fn to_ancestor_set(bag_type: &str, bag_rules: Vec<BagRule>) -> HashSet<String> {
+    insert_ancestors( &bags_by_children(bag_rules)
+                    , HashSet::new()
+                    , &bag_type.to_string() )
 }
 
-fn build_container_map(bag_rules: Vec<BagRule>) -> HashMap<String, HashSet<String>> {
-    bag_rules.iter()
-    .fold(HashMap::new(), |mut map, parent| {
-        parent.contents.keys()
-        .for_each(|child_bag_type| {
-            if !map.contains_key(child_bag_type) {
-                map.insert(child_bag_type.to_string(), HashSet::new());
-            }
-
-            map.get_mut(child_bag_type)
-            .map(|set| set.insert(parent.bag_type.to_string()));
-        });
-        map
+fn bags_by_children(bag_rules: Vec<BagRule>) -> HashMap<String, HashSet<String>> {
+    bag_rules.iter().fold(HashMap::new(), |map, parent| {
+        parent.contents.keys().fold(map, |mut _map, child_bag_type| {
+            if !_map.contains_key(child_bag_type)
+                { _map.insert( child_bag_type.to_string(), HashSet::new() ); }
+            if let Some(set) = _map.get_mut(child_bag_type)
+                { set.insert( parent.bag_type.to_string() ); }
+            _map
+        })
     })
 }
 
-fn hydrate_set( key: &String
-              , container_maps_map: &HashMap<String, HashSet<String>>
-              , set: &mut HashSet<String>
-              ) {
-    if set.contains(key) { return; }
-    else { set.insert(key.to_string()); }
+fn insert_ancestors( container_sets_map: &HashMap<String, HashSet<String>>
+                   , set: HashSet<String>
+                   , bag_type: &String
+                   ) -> HashSet<String> {
+    match container_sets_map.get(bag_type) {
+        Some(container_set) =>
+            container_set.iter().fold(set, |s, bag_type| {
+                insert_bag(container_sets_map, s, &bag_type)
+            }),
+        _ => set,
+    }
+}
 
-    container_maps_map.get(key)
-    .map(|container_map|
-        container_map.iter()
-        .for_each(|bag_type| {
-            hydrate_set(&bag_type, container_maps_map, set);
-        }));
+fn insert_bag( container_sets_map: &HashMap<String, HashSet<String>>
+             , mut set: HashSet<String>
+             , bag_type: &String
+             ) -> HashSet<String> {
+    if set.contains(bag_type) { return set; }
+    else { set.insert( bag_type.to_string() ); }
+    insert_ancestors(container_sets_map, set, bag_type)
 }
 
 fn parse_rule(line: &str) -> BagRule {
