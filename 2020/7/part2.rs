@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::collections::HashSet;
 use std::fs;
 
 
@@ -11,7 +10,9 @@ fn main() {
 }
 
 fn to_sum_of_descendants(bag_type: &str, bag_rules: Vec<BagRule>) -> usize {
-    sum_descendants( &bags_by_type(bag_rules), 0, &bag_type.to_string() )
+    let bag_map = bags_by_type(bag_rules);
+    let seed = (&bag_type.to_string(), 1);
+    sum_descendants( &bag_map, 0, vec![seed] ) - 1
 }
 
 fn bags_by_type(bag_rules: Vec<BagRule>) -> HashMap<String, HashMap<String, usize>> {
@@ -22,15 +23,22 @@ fn bags_by_type(bag_rules: Vec<BagRule>) -> HashMap<String, HashMap<String, usiz
 }
 
 fn sum_descendants( bag_map: &HashMap<String, HashMap<String, usize>>
-                  , sum: usize
-                  , bag_type: &String
+                  , mut sum: usize
+                  , bag_multipliers: Vec<(&String, usize)>
                   ) -> usize {
-    match bag_map.get(bag_type) {
-        Some(contents) =>
-            contents.iter().fold(sum, |x, (child_type, count)|
-                x + count * sum_descendants(bag_map, 1, child_type)),
-        _ => sum,
-    }
+    if bag_multipliers.len() == 0 { return sum; }
+    let next_multipliers =
+        bag_multipliers.iter()
+        .fold(Vec::new(), |mut next_multipliers, (bag_type, multiplier)| {
+            sum += multiplier;
+            if let Some(contents) = bag_map.get(&bag_type.to_string()) {
+                contents.iter().for_each(|(bag_type, count)| {
+                    next_multipliers.push( (bag_type, multiplier * count) );
+                });
+            }
+            next_multipliers
+        });
+    sum_descendants(bag_map, sum, next_multipliers)
 }
 
 fn parse_rule(line: &str) -> BagRule {
