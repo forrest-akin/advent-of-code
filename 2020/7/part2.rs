@@ -27,17 +27,17 @@ fn sum_descendants( bag_map: &HashMap<String, HashMap<String, usize>>
                   , bag_multipliers: Vec<(&String, usize)>
                   ) -> usize {
     if bag_multipliers.len() == 0 { return sum; }
-    let next_multipliers =
-        bag_multipliers.iter()
-        .fold(Vec::new(), |mut next_multipliers, (bag_type, multiplier)| {
-            sum += multiplier;
-            if let Some(contents) = bag_map.get(&bag_type.to_string()) {
-                contents.iter().for_each(|(bag_type, count)| {
-                    next_multipliers.push( (bag_type, multiplier * count) );
-                });
-            }
-            next_multipliers
-        });
+
+    let mut next_multipliers = Vec::new();
+    bag_multipliers.iter().for_each(|(bag_type, multiplier)| {
+        sum += multiplier;
+        if let Some(contents) = bag_map.get(&bag_type.to_string()) {
+            contents.iter().for_each(|(bag_type, count)| {
+                next_multipliers.push( (bag_type, multiplier * count) );
+            });
+        }
+    });
+
     sum_descendants(bag_map, sum, next_multipliers)
 }
 
