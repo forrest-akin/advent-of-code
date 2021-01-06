@@ -22,8 +22,7 @@ fn find_outlier(numbers: &[i64]) -> Option<i64> {
 
 fn find_two_sum(target: i64, numbers: &[i64]) -> Option<(i64, i64)> {
     let diff_map = key_by_diff(target, &numbers);
-    numbers.iter()
-    .find_map(|&x| diff_map.get(&x).map(|&y| (x, y)))
+    numbers.iter().find_map(|&x| diff_map.get(&x).map(|&y| (x, y)))
 }
 
 fn key_by_diff(target: i64, numbers: &[i64]) -> HashMap<i64, i64> {
