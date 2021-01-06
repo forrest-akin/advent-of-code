@@ -4,12 +4,12 @@ use std::fs;
 
 fn main() {
     let input = fs::read_to_string("input").expect("IOError: unable to read input");
-    let mut instructions: Vec<Instruction> = input.lines().map(parse_instruction).collect();
-    let acc = fix_instructions(&mut instructions);
+    let instructions: Vec<Instruction> = input.lines().map(parse_instruction).collect();
+    let acc = fix_instructions(&instructions);
     println!("{}", acc);
 }
 
-fn fix_instructions(instructions: &mut Vec<Instruction>) -> i32 {
+fn fix_instructions(instructions: &[Instruction]) -> i32 {
     let toggle_ndxs = instructions.iter().enumerate()
         .filter(|(_, instruction)| match instruction.operation {
             Operation::Jmp => true,
@@ -62,9 +62,7 @@ impl Iterator for Exeggutor<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         let Exeggutor { instructions, program_state, history, toggle_ndx } = self;
-        if history.contains(&program_state.ndx) {
-            None
-        }
+        if history.contains(&program_state.ndx) { None }
         else {
             instructions.get(program_state.ndx as usize)
             .map(|instruction| {
