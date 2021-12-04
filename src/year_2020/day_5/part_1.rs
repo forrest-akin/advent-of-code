@@ -1,12 +1,19 @@
 use std::fs;
 
 pub fn main() {
-    let input = fs::read_to_string("src/year_2020/day_5/input").expect("IOError: unable to read input");
+    let input =
+        fs::read_to_string("src/year_2020/day_5/input").expect("IOError: unable to read input");
     let seats = input.lines().map(parse_line);
-    let max_id = seats.fold(0, |max_id, seat| {
-        if max_id < seat.id { seat.id }
-        else { max_id }
-    });
+    let max_id = seats.fold(
+        0,
+        |max_id, seat| {
+            if max_id < seat.id {
+                seat.id
+            } else {
+                max_id
+            }
+        },
+    );
     println!("{}", max_id);
 }
 
@@ -19,25 +26,25 @@ fn parse_line(line: &str) -> Seat {
 }
 
 fn parse_row(raw_row: &str) -> i32 {
-    raw_row.chars()
-    .fold(BinarySearcher { low: 0, high: 127 },
-        |bs, c| match c {
+    raw_row
+        .chars()
+        .fold(BinarySearcher { low: 0, high: 127 }, |bs, c| match c {
             'F' => bs.left(),
             'B' => bs.right(),
             _ => panic!("ParseError: row characters must be 'F' or 'B'"),
         })
-    .middle()
+        .middle()
 }
 
 fn parse_col(raw_col: &str) -> i32 {
-    raw_col.chars()
-    .fold(BinarySearcher { low: 0, high: 7 },
-        |bs, c| match c {
+    raw_col
+        .chars()
+        .fold(BinarySearcher { low: 0, high: 7 }, |bs, c| match c {
             'L' => bs.left(),
             'R' => bs.right(),
             _ => panic!("ParseError: column characters must be 'R' or 'L'"),
         })
-    .middle()
+        .middle()
 }
 
 #[derive(Debug)]

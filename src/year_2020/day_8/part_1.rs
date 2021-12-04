@@ -1,19 +1,30 @@
 use std::collections::HashSet;
 use std::fs;
 
-
 pub fn main() {
-    let input = fs::read_to_string("src/year_2020/day_8/input").expect("IOError: unable to read input");
+    let input =
+        fs::read_to_string("src/year_2020/day_8/input").expect("IOError: unable to read input");
     let instructions: Vec<Instruction> = input.lines().map(parse_instruction).collect();
-    let acc = Exeggutor::new(instructions).last().expect("No instructions processed");
+    let acc = Exeggutor::new(instructions)
+        .last()
+        .expect("No instructions processed");
     println!("{}", acc);
 }
 
 fn parse_instruction(line: &str) -> Instruction {
     let mut iter = line.split(' ');
-    let operation = iter.next().and_then(Operation::from).expect("ParseError: unable to parse operation");
-    let argument = iter.next().and_then(|arg| arg.parse::<i32>().ok()).expect("ParseError: unable to parse argument");
-    Instruction { operation, argument }
+    let operation = iter
+        .next()
+        .and_then(Operation::from)
+        .expect("ParseError: unable to parse operation");
+    let argument = iter
+        .next()
+        .and_then(|arg| arg.parse::<i32>().ok())
+        .expect("ParseError: unable to parse argument");
+    Instruction {
+        operation,
+        argument,
+    }
 }
 
 #[derive(Debug)]
@@ -28,7 +39,7 @@ impl Exeggutor {
         Exeggutor {
             instructions,
             program_state: ProgramState::new(),
-            history: HashSet::new()
+            history: HashSet::new(),
         }
     }
 }
@@ -37,14 +48,20 @@ impl Iterator for Exeggutor {
     type Item = i32;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let Exeggutor { instructions, program_state, history } = self;
-        if history.contains(&program_state.ndx) { None }
-        else {
-            instructions.get(program_state.ndx as usize)
-            .map(|instruction| {
-                history.insert(program_state.ndx);
-                program_state.eval(instruction)
-            })
+        let Exeggutor {
+            instructions,
+            program_state,
+            history,
+        } = self;
+        if history.contains(&program_state.ndx) {
+            None
+        } else {
+            instructions
+                .get(program_state.ndx as usize)
+                .map(|instruction| {
+                    history.insert(program_state.ndx);
+                    program_state.eval(instruction)
+                })
         }
     }
 }
@@ -65,9 +82,13 @@ impl ProgramState {
             Operation::Acc => {
                 self.acc += instruction.argument;
                 self.ndx += 1;
-            },
-            Operation::Jmp => { self.ndx += instruction.argument; },
-            Operation::Nop => { self.ndx += 1; },
+            }
+            Operation::Jmp => {
+                self.ndx += instruction.argument;
+            }
+            Operation::Nop => {
+                self.ndx += 1;
+            }
         };
         self.acc
     }

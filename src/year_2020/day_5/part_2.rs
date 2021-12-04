@@ -1,12 +1,12 @@
 use std::fs;
 
-
 pub fn main() {
-    let input = fs::read_to_string("src/year_2020/day_5/input").expect("IOError: unable to read input");
+    let input =
+        fs::read_to_string("src/year_2020/day_5/input").expect("IOError: unable to read input");
     let mut seats: Vec<Seat> = input.lines().map(parse_line).collect();
-    
+
     seats.sort_by_key(|seat| seat.id);
-    
+
     println!("{:?}", find_id_by_window(seats));
 }
 
@@ -16,21 +16,26 @@ fn find_id_by_diff(seats: Vec<Seat>) -> i32 {
         _ => 0,
     };
     let partial: i32 = seats.iter().map(|seat| seat.id).sum();
-    
+
     sum - partial
 }
 
-fn find_id_by_window(mut seats: Vec<Seat>) -> i32 {
-    seats.windows(2)
-    .find_map(|window| match window {
-        [prev, next] => {
-            let seat = prev.next();
-            if seat.eq(next) { None }
-            else { Some(seat) }
-        },
-        _ => None
-    }).expect("Your seat was not found!")
-    .id
+fn find_id_by_window(seats: Vec<Seat>) -> i32 {
+    seats
+        .windows(2)
+        .find_map(|window| match window {
+            [prev, next] => {
+                let seat = prev.next();
+                if seat.eq(next) {
+                    None
+                } else {
+                    Some(seat)
+                }
+            }
+            _ => None,
+        })
+        .expect("Your seat was not found!")
+        .id
 }
 
 fn parse_line(line: &str) -> Seat {
@@ -42,25 +47,25 @@ fn parse_line(line: &str) -> Seat {
 }
 
 fn parse_row(raw_row: &str) -> i32 {
-    raw_row.chars()
-    .fold(BinarySearcher { low: 0, high: 127 },
-        |bs, c| match c {
+    raw_row
+        .chars()
+        .fold(BinarySearcher { low: 0, high: 127 }, |bs, c| match c {
             'F' => bs.left(),
             'B' => bs.right(),
             _ => panic!("ParseError: row characters must be 'F' or 'B'"),
         })
-    .middle()
+        .middle()
 }
 
 fn parse_col(raw_col: &str) -> i32 {
-    raw_col.chars()
-    .fold(BinarySearcher { low: 0, high: 7 },
-        |bs, c| match c {
+    raw_col
+        .chars()
+        .fold(BinarySearcher { low: 0, high: 7 }, |bs, c| match c {
             'L' => bs.left(),
             'R' => bs.right(),
             _ => panic!("ParseError: column characters must be 'R' or 'L'"),
         })
-    .middle()
+        .middle()
 }
 
 #[derive(Debug, Eq)]
@@ -80,11 +85,18 @@ impl Seat {
     fn next(&self) -> Self {
         if self.col == 7 {
             let row = self.row + 1;
-            Seat { id: row * 8, row, col: 0 }
-        }
-        else {
+            Seat {
+                id: row * 8,
+                row,
+                col: 0,
+            }
+        } else {
             let col = self.col + 1;
-            Seat { id: self.row * 8 + col, row: self.row, col }
+            Seat {
+                id: self.row * 8 + col,
+                row: self.row,
+                col,
+            }
         }
     }
 }

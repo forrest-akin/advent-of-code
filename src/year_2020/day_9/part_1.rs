@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 use std::fs;
 
-
 pub fn main() {
-    let raw_input = fs::read_to_string("src/year_2020/day_9/input").expect("IOError: unable to read input");
+    let raw_input =
+        fs::read_to_string("src/year_2020/day_9/input").expect("IOError: unable to read input");
     let numbers = parse_input(&raw_input).unwrap();
     let outlier = find_outlier(&numbers).unwrap();
     println!("{:?}", outlier);
@@ -21,8 +21,10 @@ fn find_outlier(numbers: &[i64]) -> Option<i64> {
 }
 
 fn find_two_sum(target: i64, numbers: &[i64]) -> Option<(i64, i64)> {
-    let diff_map = key_by_diff(target, &numbers);
-    numbers.iter().find_map(|&x| diff_map.get(&x).map(|&y| (x, y)))
+    let diff_map = key_by_diff(target, numbers);
+    numbers
+        .iter()
+        .find_map(|&x| diff_map.get(&x).map(|&y| (x, y)))
 }
 
 fn key_by_diff(target: i64, numbers: &[i64]) -> HashMap<i64, i64> {
@@ -30,7 +32,11 @@ fn key_by_diff(target: i64, numbers: &[i64]) -> HashMap<i64, i64> {
 }
 
 fn parse_input(input: &str) -> Result<Vec<i64>, &str> {
-    input.lines()
-    .map(|line| line.parse().map_err(|_| "ParseError: each row must be an integer"))
-    .collect()
+    input
+        .lines()
+        .map(|line| {
+            line.parse()
+                .map_err(|_| "ParseError: each row must be an integer")
+        })
+        .collect()
 }
