@@ -15,7 +15,7 @@ fn solve(numbers: Vec<i32>) -> i32 {
         .collect::<Vec<i32>>()
         .windows(2)
         .fold(0, |count, window| {
-            if window[0].lt(&window[1]) {
+            if window[0] < window[1] {
                 count + 1
             } else {
                 count
