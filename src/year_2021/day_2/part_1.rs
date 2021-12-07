@@ -4,17 +4,19 @@ pub fn main() {
     let raw_input =
         fs::read_to_string("src/year_2021/day_2/input").expect("IOError: unable to read input");
     let directions = parse_input(&raw_input).unwrap();
-    let state = directions.iter().fold(State::default(), |state, direction| {
-        state.r#move(direction)
-    });
-    println!("{}", state.x * state.y)
+    let solution = solve(directions);
+    println!("{}", solution)
+}
+
+fn solve(directions: Vec<Direction>) -> i32 {
+    let State { x, y } = directions
+        .iter()
+        .fold(State::default(), |state, direction| state.r#move(direction));
+    x * y
 }
 
 fn parse_input(input: &str) -> Result<Vec<Direction>, &str> {
-    input
-        .lines()
-        .map(FromStr::from_str)
-        .collect()
+    input.lines().map(FromStr::from_str).collect()
 }
 
 #[derive(Default)]
@@ -46,8 +48,12 @@ impl FromStr for Direction {
     type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (direction, amount) = s.split_once(' ').ok_or("ParseError: input must be formatted `$DIRECTION $INT`")?;
-        let amount = amount.parse().map_err(|_| "ParseError: amount must be an integer")?;
+        let (direction, amount) = s
+            .split_once(' ')
+            .ok_or("ParseError: input must be formatted `$DIRECTION $INT`")?;
+        let amount = amount
+            .parse()
+            .map_err(|_| "ParseError: amount must be an integer")?;
         Ok(match direction {
             "forward" => Self::Forward(amount),
             "backward" => Self::Backward(amount),
