@@ -9,14 +9,10 @@ pub fn main() {
 }
 
 fn solve(directions: Vec<Direction>) -> i32 {
-    let State { x, y, .. } = directions
+    directions
         .iter()
-        .fold(State::default(), |state, direction| state.r#move(direction));
-    x * y
-}
-
-fn parse_input(input: &str) -> Result<Vec<Direction>, &str> {
-    input.lines().map(FromStr::from_str).collect()
+        .fold(State::default(), |state, direction| state.r#move(direction))
+        .product()
 }
 
 #[derive(Default)]
@@ -38,6 +34,10 @@ impl State {
             Direction::Backward(amount) => self.x -= amount,
         };
         self
+    }
+
+    fn product(&self) -> i32 {
+        self.x * self.y
     }
 }
 
@@ -66,4 +66,8 @@ impl FromStr for Direction {
             _ => return Err("ParseError: unrecognized direction"),
         })
     }
+}
+
+fn parse_input(input: &str) -> Result<Vec<Direction>, &str> {
+    input.lines().map(FromStr::from_str).collect()
 }
