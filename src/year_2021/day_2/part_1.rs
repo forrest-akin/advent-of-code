@@ -9,14 +9,10 @@ pub fn main() {
 }
 
 fn solve(directions: Vec<Direction>) -> i32 {
-    let State { x, y } = directions
+    directions
         .iter()
-        .fold(State::default(), |state, direction| state.r#move(direction));
-    x * y
-}
-
-fn parse_input(input: &str) -> Result<Vec<Direction>, &str> {
-    input.lines().map(FromStr::from_str).collect()
+        .fold(State::default(), |state, direction| state.r#move(direction))
+        .product()
 }
 
 #[derive(Default)]
@@ -35,6 +31,10 @@ impl State {
         };
         self
     }
+
+    fn product(&self) -> i32 {
+        self.x * self.y
+    }
 }
 
 enum Direction {
@@ -42,6 +42,10 @@ enum Direction {
     Down(i32),
     Backward(i32),
     Forward(i32),
+}
+
+fn parse_input(input: &str) -> Result<Vec<Direction>, &str> {
+    input.lines().map(FromStr::from_str).collect()
 }
 
 impl FromStr for Direction {
